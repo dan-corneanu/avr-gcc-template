@@ -16,8 +16,8 @@ endif()
 if(NOT DEFINED L_FUSE)
   message(FATAL_ERROR "Mandatory L_FUSE variable not defined.")
 endif()
-if(NOT DEFINED BAUD)
-  message(FATAL_ERROR "Mandatory BAUD variable not defined.")
+if(NOT DEFINED UART_BAUD_RATE)
+  message(FATAL_ERROR "Mandatory UART_BAUD_RATE variable not defined.")
 endif()  
 if(NOT DEFINED PROG_TYPE)
   message(FATAL_ERROR "Mandatory PROG_TYPE variable not defined.")
@@ -32,7 +32,7 @@ set(CMAKE_ASM_COMPILER avr-gcc)
 # Pass defines to compiler
 add_definitions(
     -DF_CPU=${F_CPU}
-    -DBAUD=${BAUD}
+    -DUART_BAUD_RATE=${UART_BAUD_RATE}
 )
 
 # mmcu MUST be passed to both the compiler and linker. This set

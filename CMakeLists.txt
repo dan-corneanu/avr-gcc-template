@@ -21,10 +21,13 @@ set(H_FUSE 0xda)
 set(L_FUSE 0xff)
 
 # Default Baudrate for UART, read avr include/util/setbaud.h for usage
-set(BAUD 9600)
+set(UART_BAUD_RATE 9600)
 
 # The programmer to use, read avrdude manual for list
 set(PROG_TYPE usbtiny)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_C_COMPILER_VERSION 4.5)
 
 include(cmake/avr-gcc.toolchain.cmake)
 
