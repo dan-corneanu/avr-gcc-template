@@ -34,12 +34,37 @@ set(PRODUCT_NAME avr-template)
 project("avr-template"
   DESCRIPTION "Template project for avr-gcc development, based on CMake.")
 
-file(GLOB SRC_FILES
-  "src/*.c")
+# Explicitely list all dependencies.
+list(APPEND SRC_FILES
+  "src/main.c"
+  "src/drivers/uart/uart.c")
 
 # Create one target
 add_executable(${PRODUCT_NAME} ${SRC_FILES})
 
-# target_include_directories(${PRODUCT_NAME} PUBLIC
-#   "headers"
-# )
+target_include_directories(${PRODUCT_NAME} PRIVATE
+  "headers"
+)
+
+# Rename the output to .elf as we will create multiple files
+set_target_properties(${PRODUCT_NAME} PROPERTIES OUTPUT_NAME ${PRODUCT_NAME}.elf)
+
+# Strip binary for upload
+add_custom_target(strip ALL avr-strip ${PRODUCT_NAME}.elf DEPENDS ${PRODUCT_NAME})
+
+# Transform binary into hex file, we ignore the eeprom segments in the step
+add_custom_target(hex ALL avr-objcopy -R .eeprom -O ihex ${PRODUCT_NAME}.elf ${PRODUCT_NAME}.hex DEPENDS strip)
+
+# Transform binary into hex file, this is the eeprom part (empty if you don't
+# use eeprom static variables)
+# add_custom_target(eeprom avr-objcopy -j .eeprom  --set-section-flags=.eeprom="alloc,load"  --change-section-lma .eeprom=0 -O ihex ${PRODUCT_NAME}.elf ${PRODUCT_NAME}.eep DEPENDS strip)
+
+# Upload the firmware with avrdude
+add_custom_target(upload avrdude  -c ${PROG_TYPE} -p ${MCU} -U flash:w:${PRODUCT_NAME}.hex DEPENDS hex)
+
+# Burn fuses.
+# !!!! Be careful with this one.
+# add_custom_target(fuses avrdude -c ${PROG_TYPE} -p ${MCU}  -U lfuse:w:${L_FUSE}:m -U hfuse:w:${H_FUSE}:m -U efuse:w:${E_FUSE}:m )
+
+# Clean extra files
+set_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES "${PRODUCT_NAME}.hex;${PRODUCT_NAME}.eeprom;${PRODUCT_NAME}.lst")
