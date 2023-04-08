@@ -178,3 +178,27 @@
 *** lsp-mode
     - lsp-enable-on-type-formatting
     - lsp-clients-clangd-args
+
+*** YASnippet
+    https://github.com/joaotavora/yasnippet
+    - remember to enable *yas-minor-mode*
+
+*** Emacs setup
+
+    Enable lsp-mode and companions on every C/C++ file that is
+    descendant of a folder that has a CMakeLists.txt file.
+
+    #+begin_src elisp
+      (defun maybe-cmake-project ()
+	(locate-dominating-file default-directory "CMakeLists.txt"))
+
+      (defun maybe-lsp-project-mode ()
+	(if (maybe-cmake-project)
+	    (progn
+	      (lsp)
+	      (company-mode)
+	      (yas-minor-mode))))
+
+      (add-hook 'c-mode-hook 'maybe-lsp-project-mode)
+      (add-hook 'c++-mode-hook 'maybe-lsp-project-mode)
+    #+end_src
