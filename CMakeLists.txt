@@ -40,6 +40,8 @@ project("avr-template"
 # Explicitely list all dependencies.
 list(APPEND SRC_FILES
   "src/main.c"
+  "src/hardware/gpio.c"
+  "src/drivers/digital_io.c"
   "src/drivers/uart/uart.c")
 
 # Create one target

@@ -1,6 +1,15 @@
 #+STARTUP: overview
 
 * AVR development environment setup
+** Similar projects
+   - [[https://github.com/mkleemann/cmake-avr][mkleemann/cmake-avr]]
+   - [[https://github.dev/Helius/cmake-avr-template][Helius/cmake-avr-template]]
+   - [[https://github.com/rubberduck203/avr-template][rubberduck203/avr-template]]
+     This one is based on Makefiles
+   - [[https://github.com/antima/avr-template][antima/avr-template]] This repo is a copanion to [[https://antima.it/en/embedded-logs-from-scratch-pt-1-setting-up-the-environment-with-avr-gcc-make-cmake/][Embedded Logs –
+     From scratch]] which is a project to set up an avr dev env and an
+     avr board from scratch.
+
 ** Tools
   - *AVR GCC Toolchain*
     - avr-binutils
@@ -49,7 +58,10 @@
 
     At this point we should be able to compile and upload the project
     from command line.
-    
+
+    - how to add modules with their own CMake file?
+    - how to enable/disable the modules that are used by a project?
+      
 *** clangd
 
     https://clangd.llvm.org/config
@@ -161,4 +173,8 @@
 
         *Note:* This option is only implemented by makefile and ninja
         generators.
+
 	
+*** lsp-mode
+    - lsp-enable-on-type-formatting
+    - lsp-clients-clangd-args
