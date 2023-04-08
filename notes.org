@@ -1,0 +1,164 @@
+#+STARTUP: overview
+
+* AVR development environment setup
+** Tools
+  - *AVR GCC Toolchain*
+    - avr-binutils
+    - avr-gcc
+    - avr-libc
+
+      https://www.nongnu.org/avr-libc/
+      
+      AVR Libc is a Free Software project whose goal is to provide a
+      high quality C library for use with GCC on Atmel AVR
+      microcontrollers.
+
+  - *CMake*
+    
+  - *Language Server*
+    - clangd
+
+      https://clangd.llvm.org/
+
+      clangd understands your C++ code and adds smart features to
+      your editor: code completion, compile errors, go-to-definition
+      and more.
+
+  - *Language Server Protocol Support for Emacs*
+    - lsp-mode
+
+      https://github.com/emacs-lsp/lsp-mode
+
+      Client for *Language Server Protocol* (v3.14). lsp-mode aims to
+      provide IDE-like experience by providing optional integration
+      with the most popular Emacs packages like company, flycheck and
+      projectile.
+
+  - *Code completion*
+    - company-mode
+
+      https://company-mode.github.io/
+
+      Company is a text completion framework for Emacs. The name
+      stands for /complete anything/.
+
+** How to setup 
+*** Project structure
+*** AVR GCC toolchain
+*** CMake file
+
+    At this point we should be able to compile and upload the project
+    from command line.
+    
+*** clangd
+
+    https://clangd.llvm.org/config
+    https://clangd.llvm.org/design/compile-commands
+
+    We need to make a distinction between the compiler used to build
+    the project (e.g. *avr-gcc*) and the one used by the language
+    server (e.g. *clang*).
+    
+    - query-driver
+
+      *clangd* can extract the default include paths directly from the
+      build compiler you are using. However, due to security
+      considerations, the compiler has to be explicitely
+      whitelisted. If it is not whitelisted, clangd will not attempt
+      to automatically inquire the compiler and you will have to
+      manually pass in the list of system include folders.
+
+      *query-driver* is a command line option. To instruct *lsp-mode*
+      to pass this option to *clangd* you'll have to customise the
+      *lsp-clients-clangd-args* variable.
+
+      #+begin_src elisp
+	(custom-set-variables
+	 '(lsp-clients-clangd-args
+	   '(
+	     "--header-insertion-decorators=0"
+	     "--query-driver=/opt/homebrew/bin/avr-gcc")))
+      #+end_src
+
+      To check that *clangd* is actually querying the compiler, have a
+      look at the *clangd::stderr* buffer in your emacs. You should see
+      somthing like
+
+      #+BEGIN_EXAMPLE
+      I[22:37:43.989] argv[2]: --query-driver=/opt/homebrew/bin/avr-gcc
+      ...
+      I[22:37:44.050] System includes extractor: successfully executed /opt/homebrew/bin/avr-gcc
+      got includes: "/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/include, /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/include-fixed, /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/include"
+      got target: "avr"
+      #+END_EXAMPLE
+      
+      *clangd* will use something like this:
+      #+begin_src bash
+	avr-gcc -E -v -x c++ /dev/null
+
+	#> Using built-in specs.
+	#> Reading specs from /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/device-specs/specs-avr2
+	#> COLLECT_GCC=avr-gcc
+	#> Target: avr
+	#> Configured with: ../configure --target=avr --prefix=/opt/homebrew/Cellar/avr-gcc@9/9.4.0 --libdir=/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9 --enable-languages=c,c++ --with-ld=/opt/homebrew/opt/avr-binutils/bin/avr-ld --with-as=/opt/homebrew/opt/avr-binutils/bin/avr-as --disable-nls --disable-libssp --disable-shared --disable-threads --disable-libgomp --with-dwarf2 --with-avrlibc --with-system-zlib --with-pkgversion='Homebrew AVR GCC 9.4.0' --with-bugurl=https://github.com/osx-cross/homebrew-avr/issues SED=/usr/bin/sed
+	#> Thread model: single
+	#> gcc version 9.4.0 (Homebrew AVR GCC 9.4.0)
+	#> COLLECT_GCC_OPTIONS='-E' '-v' '-specs=device-specs/specs-avr2'
+	#>  /opt/homebrew/Cellar/avr-gcc@9/9.4.0/libexec/gcc/avr/9.4.0/cc1plus -E -quiet -v /dev/null -mn-flash=6 -mskip-bug -mn-flash=6 -mskip-bug -fno-rtti -fno-enforce-eh-specs -fno-exceptions
+	#> ignoring nonexistent directory "/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/include/c++/9.4.0"
+	#> ignoring nonexistent directory "/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/include/c++/9.4.0/avr"
+	#> ignoring nonexistent directory "/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/include/c++/9.4.0/backward"
+	#> ignoring nonexistent directory "/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/sys-include"
+	#> #include "..." search starts here:
+	#> #include <...> search starts here:
+	#>  /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/include
+	#>  /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/include-fixed
+	#>  /opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/include
+	#> End of search list.
+	#> # 1 "/dev/null"
+	#> # 1 "<built-in>"
+	#> # 1 "<command-line>"
+	#> # 1 "/dev/null"
+	#> COMPILER_PATH=/opt/homebrew/Cellar/avr-gcc@9/9.4.0/libexec/gcc/avr/9.4.0/:/opt/homebrew/Cellar/avr-gcc@9/9.4.0/libexec/gcc/avr/9.4.0/:/opt/homebrew/Cellar/avr-gcc@9/9.4.0/libexec/gcc/avr/:/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/:/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/
+	#> LIBRARY_PATH=/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/:/opt/homebrew/Cellar/avr-gcc@9/9.4.0/lib/avr-gcc/9/gcc/avr/9.4.0/../../../../../../avr/lib/
+	#> COLLECT_GCC_OPTIONS='-E' '-v' '-specs=device-specs/specs-avr2'
+      #+end_src      
+
+    - compile flags
+
+      ❓ *clangd* is using the *clang* compiler to extract the AST
+      tree.❓Sometimes your build compiler will support extra
+      compilation flags that *clang* does not recognise. Other times,
+      you might have to pass extra compilation flags to clangd on top
+      of the ones you pass to your build compiler.
+      
+      You can tweak the compile flags, used by *clang*, through the *user
+      configuration* file or the per *project configuration
+      file*. These are YAML files.
+      
+      - .clangd
+      - ~/Library/Preferences/clangd/config.yaml
+
+      E.g.
+      #+begin_src yml
+	CompileFlags:
+          Remove: [-fno-split-wide-types, -fno-tree-scev-cprop]
+          Add: [-D__GNUC__=4, -D__GNUC_MINOR__=5]
+      #+end_src
+
+    - compilation database
+
+      This is a list of compilation commands for each source file in
+      your project.
+      
+      - *CMAKE_EXPORT_COMPILE_COMMANDS*
+
+	*clangd* relies on compilation commands when building the AST
+        tree for the source files in your project. CMake can
+        automatically generate the compilation database for your
+        project if you set the *CMAKE_EXPORT_COMPILE_COMMANDS*
+        variable.
+
+        *Note:* This option is only implemented by makefile and ninja
+        generators.
+	
