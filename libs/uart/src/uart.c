@@ -40,7 +40,7 @@ LICENSE:
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
-#include "drivers/uart/uart.h"
+#include "uart.h"
 
 /*
  *  constants and macros

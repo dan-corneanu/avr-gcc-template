@@ -3,7 +3,7 @@
 
 #include "hardware/gpio.h"
 #include "main.h"
-#include "drivers/uart/uart.h"
+#include "uart.h"
 #include "digital_io_cfg.h"
 #include "drivers/digital_io.h"
 
@@ -24,7 +24,7 @@ inline static void init(void) {
 
 void delay(volatile uint32_t d) 
 {
-  while (d-- != 0)     // loops while non-0 and decrements
+  while (d-- != 0)
     ;
 }
 
@@ -32,11 +32,12 @@ int main(void) {
   init();
   printf("Initialization done ...\n\r");
 
-  while(1) // forever loop
-    { 
-      digital_io_toggle(ON_BOARD_RED_LED);
-      delay(80000); // 8 MHz / 800
-    }
+  while(1) { 
+    digital_io_write(ON_BOARD_RED_LED, HIGH);
+    delay(8000);
+    digital_io_write(ON_BOARD_RED_LED, LOW);
+    delay(800000);
+  }
   
   for(;;) {
     __asm("NOP");

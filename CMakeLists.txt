@@ -30,6 +30,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_COMPILER_VERSION 4.5)
 
 include(cmake/avr-gcc.toolchain.cmake)
+include(cmake/libs.cmake)
 
 # Product filename
 set(PRODUCT_NAME avr-template)
@@ -41,8 +42,7 @@ project("avr-template"
 list(APPEND SRC_FILES
   "src/main.c"
   "src/hardware/gpio.c"
-  "src/drivers/digital_io.c"
-  "src/drivers/uart/uart.c")
+  "src/drivers/digital_io.c")
 
 # Create one target
 add_executable(${PRODUCT_NAME} ${SRC_FILES})
@@ -50,6 +50,8 @@ add_executable(${PRODUCT_NAME} ${SRC_FILES})
 target_include_directories(${PRODUCT_NAME} PRIVATE
   "headers"
 )
+
+target_link_libraries(${PRODUCT_NAME} PUBLIC uart)
 
 # Rename the output to .elf as we will create multiple files
 set_target_properties(${PRODUCT_NAME} PROPERTIES OUTPUT_NAME ${PRODUCT_NAME}.elf)
