@@ -83,8 +83,7 @@ typedef enum
 typedef enum
   {
     INPUT,
-    OUTPUT,
-    TRISTATE
+    OUTPUT
   } Gpio_PinDirectionType;
 
 typedef enum
