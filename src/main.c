@@ -5,6 +5,7 @@
 #include "main.h"
 #include "uart.h"
 #include "cfg.h"
+#include "drivers/gpio.h"
 #include "drivers/digital_io.h"
 
 #ifndef UART_BAUD_RATE
@@ -14,7 +15,7 @@
 inline static void init(void) {
   cli();
 
-  digital_io_init(DIGITAL_IO_CONFIG, DIGITAL_IO_CONFIG_SIZE);
+  gpio_init(DIGITAL_IO_CONFIG, DIGITAL_IO_CONFIG_SIZE);
   
   uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
   uart_attach_stdout();

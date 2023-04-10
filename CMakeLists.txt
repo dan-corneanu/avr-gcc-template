@@ -43,6 +43,7 @@ list(APPEND SRC_FILES
   "src/main.c"
   "src/cfg.c"
   "src/hardware/gpio.c"
+  "src/drivers/gpio.c"
   "src/drivers/digital_io.c")
 
 # Create one target

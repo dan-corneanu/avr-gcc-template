@@ -1,5 +1,5 @@
-#ifndef __GPIO_HEADER_INCLUDED__
-#define __GPIO_HEADER_INCLUDED__
+#ifndef __HARDWARE_GPIO_HEADER_INCLUDED__
+#define __HARDWARE_GPIO_HEADER_INCLUDED__
 
 #include <stdint.h>
 #include <avr/io.h>
@@ -22,6 +22,7 @@
 /* This section defines abstractions for the device registers. */
 
 extern const uint8_t NUM_PINS_PER_PORT;
+
 
 typedef enum
   {
@@ -106,5 +107,13 @@ typedef struct
   bool pull_up;
   Gpio_PinStateType state;
 } Gpio_PinConfigType;
+
+static inline uint8_t c_pin_number(const Gpio_PinType pin) {
+  return pin % NUM_PINS_PER_PORT;
+}
+
+static inline uint8_t c_port_number(const Gpio_PinType pin) {
+  return pin / NUM_PINS_PER_PORT;
+}
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef __DIGITAL_IO_HEADER_INCLUDED__
-#define __DIGITAL_IO_HEADER_INCLUDED__
+#ifndef __DRIVERS_DIGITAL_IO_HEADER_INCLUDED__
+#define __DRIVERS_DIGITAL_IO_HEADER_INCLUDED__
 
 /**
  * Features to be implemented in this driver:
@@ -12,8 +12,6 @@
 
 #include "hardware/gpio.h"
 #include <stdint.h>
-
-void digital_io_init(const Gpio_PinConfigType * config, uint8_t size);
 
 void digital_io_toggle(const Gpio_PinType pin);
 

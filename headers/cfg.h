@@ -1,5 +1,5 @@
-#ifndef __DIGITAL_CFG_HEADER_INCLUDED__
-#define __DIGITAL_CFG_HEADER_INCLUDED__
+#ifndef __CFG_HEADER_INCLUDED__
+#define __CFG_HEADER_INCLUDED__
 
 #include "hardware/gpio.h"
 #include <stdint.h>
