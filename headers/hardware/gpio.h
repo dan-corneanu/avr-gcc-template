@@ -58,18 +58,18 @@ typedef enum
     PORTB_2,
     PORTB_3,
     PORTB_4,
-    ON_BOARD_RED_LED, // PB5, D13 on arduino
-    PORTB_6,
-    PORTB_7,
-    PORTC_0,
+    PORTB_5, //D13 on arduino
+    // PORTB_6, // NC
+    // PORTB_7, // NC
+    PORTC_0 = 8,
     PORTC_1,
     PORTC_2,
     PORTC_3,
     PORTC_4,
     PORTC_5,
-    PORTC_6,
-    PORTC_7,
-    PORTD_0,
+    // PORTC_6, // NC
+    // PORTC_7, // NC
+    PORTD_0 = 16,
     PORTD_1,
     PORTD_2,
     PORTD_3,

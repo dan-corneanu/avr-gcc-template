@@ -19,4 +19,6 @@ void digital_io_toggle(const Gpio_PinType pin);
 
 void digital_io_write(const Gpio_PinType pin, const Gpio_PinStateType state);
 
+Gpio_PinStateType digital_io_read(const Gpio_PinType pin);
+
 #endif

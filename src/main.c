@@ -4,7 +4,7 @@
 #include "hardware/gpio.h"
 #include "main.h"
 #include "uart.h"
-#include "digital_io_cfg.h"
+#include "cfg.h"
 #include "drivers/digital_io.h"
 
 #ifndef UART_BAUD_RATE
@@ -14,7 +14,7 @@
 inline static void init(void) {
   cli();
 
-  digital_io_init(DIGITAL_IO_CONFIG, 1);
+  digital_io_init(DIGITAL_IO_CONFIG, DIGITAL_IO_CONFIG_SIZE);
   
   uart_init(UART_BAUD_SELECT(UART_BAUD_RATE, F_CPU));
   uart_attach_stdout();
@@ -31,14 +31,27 @@ void delay(volatile uint32_t d)
 int main(void) {
   init();
   printf("Initialization done ...\n\r");
-
-  while(1) { 
-    digital_io_write(ON_BOARD_RED_LED, HIGH);
-    delay(8000);
-    digital_io_write(ON_BOARD_RED_LED, LOW);
-    delay(800000);
-  }
+  printf("Number of GPIO pins configured %d ...\n\r", DIGITAL_IO_CONFIG_SIZE);
   
+  printf("DDRB  register %02x\n\r", DDRB);
+  printf("PORTB register %02x\n\r", PORTB);
+  printf("PINB  register %02x\n\r", PINB);
+
+  /* while(1) {  */
+  /*   digital_io_write(ON_BOARD_RED_LED, HIGH); */
+  /*   delay(8000); */
+  /*   digital_io_write(ON_BOARD_RED_LED, LOW); */
+  /*   delay(800000); */
+  /* } */
+
+  while (1) {
+    if(digital_io_read(EXTERNAL_SW_1) == LOW) {
+      digital_io_write(ON_BOARD_RED_LED, HIGH);
+    } else {
+      digital_io_write(ON_BOARD_RED_LED, LOW);
+    }
+  }
+
   for(;;) {
     __asm("NOP");
   }

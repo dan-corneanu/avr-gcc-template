@@ -36,12 +36,11 @@ void digital_io_init(const Gpio_PinConfigType * config, uint8_t size)
       }
     } else {
       *PORTS_DATA_DIRECTION_REGISTER[port_number] |= (1 << pin_number);
-    }
-
-    if(config[i].state == HIGH) {
-      *PORTS_DATA_REGISTER[port_number] |= (1 << pin_number);
-    } else if(config[i].state == LOW) {
-      *PORTS_DATA_REGISTER[port_number] &= ~(1 << pin_number);
+      if(config[i].state == HIGH) {
+	*PORTS_DATA_REGISTER[port_number] |= (1 << pin_number);
+      } else if(config[i].state == LOW) {
+	*PORTS_DATA_REGISTER[port_number] &= ~(1 << pin_number);
+      }
     }
   }
 }
@@ -63,5 +62,17 @@ void digital_io_write(const Gpio_PinType pin, const Gpio_PinStateType state)
     *PORTS_DATA_REGISTER[port_number] |= (1 << pin_number);
   } else if(state == LOW) {
     *PORTS_DATA_REGISTER[port_number] &= ~(1 << pin_number);
+  }
+}
+
+Gpio_PinStateType digital_io_read(const Gpio_PinType pin)
+{
+  uint8_t port_number = c_port_number(pin);
+  uint8_t pin_number = c_pin_number(pin);
+
+  if(*PORTS_INPUT_PIN_REGISTER[port_number] & (1 << pin_number)) {
+    return HIGH;
+  } else {
+    return LOW;
   }
 }
