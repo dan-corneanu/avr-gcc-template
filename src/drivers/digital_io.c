@@ -2,7 +2,7 @@
 #include "hardware/gpio.h"
 #include <stdint.h>
 
-void digital_io_toggle(const Gpio_PinType pin)
+void digital_io_toggle(const Gpio_PinT pin)
 {
   uint8_t port_number = c_port_number(pin);
   uint8_t pin_number = c_pin_number(pin);
@@ -10,7 +10,7 @@ void digital_io_toggle(const Gpio_PinType pin)
   *PORTS_DATA_REGISTER[port_number] ^= (1 << pin_number);
 }
 
-void digital_io_write(const Gpio_PinType pin, const Gpio_PinStateType state)
+void digital_io_write(const Gpio_PinT pin, const Gpio_PinStateT state)
 {
   uint8_t port_number = c_port_number(pin);
   uint8_t pin_number = c_pin_number(pin);
@@ -22,7 +22,7 @@ void digital_io_write(const Gpio_PinType pin, const Gpio_PinStateType state)
   }
 }
 
-Gpio_PinStateType digital_io_read(const Gpio_PinType pin)
+Gpio_PinStateT digital_io_read(const Gpio_PinT pin)
 {
   uint8_t port_number = c_port_number(pin);
   uint8_t pin_number = c_pin_number(pin);

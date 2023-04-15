@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 #define ON_BOARD_RED_LED PORTB_5
-#define EXTERNAL_SW_1    PORTB_4
+#define EXTERNAL_SW_1    PORTD_2
 
 // Configure all the pins for a particular board here.
-extern const Gpio_PinConfigType DIGITAL_IO_CONFIG[];
+extern const Gpio_PinConfigT DIGITAL_IO_CONFIG[];
 extern const uint8_t DIGITAL_IO_CONFIG_SIZE;
 
 #endif

@@ -30,7 +30,7 @@ typedef enum
     GPIOC,
     GPIOD,
     NUM_GPIO_PORTS
-  } Gpio_PortType;
+  } Gpio_PortT;
 
 /**
  * Defines a table of pointers to the Data Register for each GPIO port
@@ -72,47 +72,47 @@ typedef enum
     // PORTC_7, // NC
     PORTD_0 = 16,
     PORTD_1,
-    PORTD_2,
-    PORTD_3,
+    PORTD_2, // INT0
+    PORTD_3, // INT1
     PORTD_4,
     PORTD_5,
     PORTD_6,
     PORTD_7,
     NUM_GPIO_PINS
-  } Gpio_PinType;
+  } Gpio_PinT;
 
 typedef enum
   {
     INPUT,
     OUTPUT
-  } Gpio_PinDirectionType;
+  } Gpio_PinDirectionT;
 
 typedef enum
   {
     HIGH,
     LOW
-  } Gpio_PinStateType;
+  } Gpio_PinStateT;
 
 typedef enum
   {
     GPIO,
     ADC_INPUT
-  } Gpio_PinFunctionType;
+  } Gpio_PinFunctionT;
 
 typedef struct
 {
-  Gpio_PinType pin;
-  Gpio_PinFunctionType function;
-  Gpio_PinDirectionType direction;
+  Gpio_PinT pin;
+  Gpio_PinFunctionT function;
+  Gpio_PinDirectionT direction;
   bool pull_up;
-  Gpio_PinStateType state;
-} Gpio_PinConfigType;
+  Gpio_PinStateT state;
+} Gpio_PinConfigT;
 
-static inline uint8_t c_pin_number(const Gpio_PinType pin) {
+static inline uint8_t c_pin_number(const Gpio_PinT pin) {
   return pin % NUM_PINS_PER_PORT;
 }
 
-static inline uint8_t c_port_number(const Gpio_PinType pin) {
+static inline uint8_t c_port_number(const Gpio_PinT pin) {
   return pin / NUM_PINS_PER_PORT;
 }
 

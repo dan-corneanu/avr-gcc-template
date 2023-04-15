@@ -1,6 +1,16 @@
 #include "drivers/gpio.h"
+#include "hardware/gpio.h"
+#include <avr/interrupt.h>
+#include <stdint.h>
+#include <stdlib.h>
 
-void gpio_init(const Gpio_PinConfigType * config, uint8_t size)
+Gpio_InterruptCallback_t * EXT_INTERRUPT_CALLBACKS[NUM_Ext_Int] =
+{
+  NULL,
+  NULL
+};
+
+void gpio_init(const Gpio_PinConfigT * config, uint8_t size)
 {
   uint8_t port_number = 0;
   uint8_t pin_number = 0;
@@ -33,4 +43,34 @@ void gpio_init(const Gpio_PinConfigType * config, uint8_t size)
       }
     }
   }
+}
+
+void gpio_registerExternalInterrupt(
+				    const Gpio_ExternalInterruptT interrupt,
+				    const Gpio_ExternalInterruptTriggerT trigger,
+				    Gpio_InterruptCallback_t * callback)
+{
+  EXT_INTERRUPT_CALLBACKS[interrupt] = callback;
+  
+  // Set up the EICRA – External Interrupt Control Register A.
+  EICRA &= ~(3 << (interrupt << 1));
+  EICRA |= (trigger << (interrupt << 1));
+
+  // Clear the EIFR – External Interrupt Flag Register.
+  EIFR |= (1 << interrupt);
+  
+  // Set up the EIMSK -  External Interrupt Mask Register.
+  EIMSK |= (1 << interrupt);
+}
+
+ISR(INT0_vect)
+{
+  // The flag is cleared when the interrupt routine is executed.
+  (*EXT_INTERRUPT_CALLBACKS[0])();
+}
+
+ISR(INT1_vect)
+{
+  // The flag is cleared when the interrupt routine is executed.
+  (*EXT_INTERRUPT_CALLBACKS[1])();
 }

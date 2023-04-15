@@ -13,10 +13,10 @@
 #include "hardware/gpio.h"
 #include <stdint.h>
 
-void digital_io_toggle(const Gpio_PinType pin);
+void digital_io_toggle(const Gpio_PinT pin);
 
-void digital_io_write(const Gpio_PinType pin, const Gpio_PinStateType state);
+void digital_io_write(const Gpio_PinT pin, const Gpio_PinStateT state);
 
-Gpio_PinStateType digital_io_read(const Gpio_PinType pin);
+Gpio_PinStateT digital_io_read(const Gpio_PinT pin);
 
 #endif
